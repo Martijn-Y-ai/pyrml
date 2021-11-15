@@ -199,7 +199,7 @@ class AbstractMap(TermMap):
 class ObjectMap(AbstractMap):
     
     def to_rdf(self):
-        g = Graph('IOMemory')
+        g = Graph()
         g.add((self._id, RDF.type, rml_vocab.OBJECT_MAP_CLASS))
         return g
 
@@ -782,7 +782,7 @@ class PredicateObjectMap(AbstractMap):
         return self.__object_map
     
     def to_rdf(self) -> Graph:
-        g = Graph('IOMemory')
+        g = Graph()
         g.add((self._id, RDF.type, rml_vocab.PREDICATE_OBJECT_MAP_CLASS))
         g = graph_add_all(g, self._predicate.to_rdf())
         
@@ -932,7 +932,7 @@ class Join(AbstractMap):
         return self.__parent
     
     def to_rdf(self) -> Graph:
-        g = Graph('IOMemory')
+        g = Graph()
         
         if self.__child is not None and self.__parent is not None:
             join = self._id
@@ -997,7 +997,7 @@ class LogicalSource(AbstractMap):
         return self.__separator
     
     def to_rdf(self):
-        g = Graph('IOMemory')
+        g = Graph()
         g.add((self._id, RDF.type, rml_vocab.BASE_SOURCE))
         g.add((self._id, rml_vocab.SOURCE, self.get_source()))
         g.add((self._id, rml_vocab.REFERENCE_FORMULATION, self.__reference_formulation))
@@ -1086,7 +1086,7 @@ class GraphMap(AbstractMap):
         
     
     def to_rdf(self):
-        g = Graph('IOMemory')
+        g = Graph()
         
         if isinstance(self._mapped_entity, Literal):
             g.add((self._id, rml_vocab.TEMPLATE, self._mapped_entity))
@@ -1152,7 +1152,7 @@ class SubjectMap(AbstractMap):
         return self.__graph_map
                 
     def to_rdf(self):
-        g = Graph('IOMemory')
+        g = Graph()
         subject_map = self._id
         
         '''
@@ -1333,7 +1333,7 @@ class TripleMappings(AbstractMap):
         return self.__predicate_object_maps.get(identifier)
     
     def to_rdf(self) -> Graph:
-        g = Graph('IOMemory')
+        g = Graph()
         g.add((self._id, RDF.type, rml_vocab.TRIPLES_MAP))
         g.add((self._id, rml_vocab.LOGICAL_SOURCE, self.__logical_source.get_id()))
         g.add((self._id, rml_vocab.SUBJECT_MAP, self.__subject_map.get_id()))
@@ -1379,7 +1379,7 @@ class TripleMappings(AbstractMap):
     def apply(self):
         start_time = time.time()
 
-        g = Graph('IOMemory')
+        g = Graph()
         
         df = self.__logical_source.apply()
         
@@ -1517,7 +1517,7 @@ class TripleMappings(AbstractMap):
     def apply_subject_map(self):
         start_time = time.time()
 
-        g = Graph('IOMemory')
+        g = Graph()
         
         df = self.__logical_source.apply()
         
@@ -1537,7 +1537,7 @@ class TripleMappings(AbstractMap):
         start_time = time.time()
         msg = "\t TripleMapping %s" % self._id
         print(msg)
-        g = Graph('IOMemory')
+        g = Graph()
         
         df = self.__logical_source.apply()
         
@@ -2125,13 +2125,13 @@ class TermUtils():
 class RMLParser():
     
     def parse(source, format="ttl"):
-        g = Graph('IOMemory')
+        g = Graph()
         g.parse(source, format=format)
         
         return TripleMappings.from_rdf(g)
         
         '''
-        g_2 = Graph('IOMemory')
+        g_2 = Graph()
         for tm in triple_mappings:
             g_2 += tm.apply()
             g1 = tm.to_rdf()
@@ -2186,7 +2186,7 @@ class RMLConverter():
         
         triple_mappings = RMLParser.parse(rml_mapping)
         
-        g = Graph('IOMemory')
+        g = Graph()
         
         
         if multiprocessed:
